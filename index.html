@@ -1,15 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>Untitled</title>
-    
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8"/>
@@ -29,18 +18,17 @@
     .header p{color:rgba(255,255,255,0.85);font-size:14px;line-height:1.7;}
     .card{background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border-radius:20px;padding:20px;border:1px solid rgba(255,255,255,0.25);margin-bottom:16px;animation:fadeUp 0.5s ease;}
     label{color:white;font-weight:700;font-size:15px;display:block;margin-bottom:8px;}
-    .field{width:100%;background:rgba(255,255,255,0.92);border:none;border-radius:12px;padding:14px 16px;font-family:'Cairo',sans-serif;font-size:15px;color:#4c1d95;outline:none;direction:rtl;margin-bottom:16px;}
+    .field{width:100%;background:rgba(255,255,255,0.92);border:none;border-radius:12px;padding:14px 16px;font-family:'Cairo',sans-serif;font-size:15px;color:#4c1d95;outline:none;direction:rtl;margin-bottom:16px;box-sizing:border-box;}
     textarea.field{resize:none;}
     select.field{cursor:pointer;}
     .btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;border:none;border-radius:14px;padding:16px;font-family:'Cairo',sans-serif;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(124,58,237,0.4);transition:all 0.3s;}
-    .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,0.5);}
+    .btn:hover:not(:disabled){transform:translateY(-2px);}
     .btn:disabled{opacity:0.7;cursor:not-allowed;}
     .spinner{display:inline-block;width:18px;height:18px;border:2px solid white;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-left:8px;}
     .error{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);border-radius:10px;padding:10px;color:white;text-align:center;font-size:14px;margin-bottom:12px;}
     .result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
     .result-header span{color:white;font-weight:700;font-size:16px;}
     .copy-btn{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 14px;color:white;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;}
-    .copy-btn:hover{background:rgba(255,255,255,0.3);}
     .result-text{background:rgba(255,255,255,0.92);border-radius:12px;padding:16px;color:#4c1d95;font-size:14px;line-height:1.9;white-space:pre-wrap;}
     .footer{text-align:center;}
     .footer p{color:white;font-weight:700;font-size:15px;margin-bottom:12px;}
@@ -96,9 +84,8 @@
     <small>✨ تم التطوير بواسطة <strong>إيمان محمد</strong> © 2026<br/>🎁 أداة مجانية 100% لمساعدة صناع المحتوى</small>
   </div>
 </div>
-
 <script>
-  const API_KEY = "AIzaSyCn1dq_r77LCkxtl_PvQijJujCBdAR4b5c";
+  const API_KEY = "YOUR_GEMINI_KEY_HERE";
 
   for(let i=0;i<20;i++){
     const s=document.createElement('div');
@@ -118,49 +105,22 @@
     const error=document.getElementById('error');
     const resultCard=document.getElementById('result-card');
     const resultText=document.getElementById('result-text');
-
-    if(!topic){
-      error.textContent='⚠️ من فضلك اكتب موضوع الفيديو';
-      error.style.display='block';
-      return;
-    }
+    if(!topic){error.textContent='⚠️ من فضلك اكتب موضوع الفيديو';error.style.display='block';return;}
     error.style.display='none';
     btn.disabled=true;
     btn.innerHTML='<span class="spinner"></span> جاري الإنشاء...';
     resultCard.style.display='none';
-
-    const prompt=`أنت خبير في كتابة سكربتات فيديوهات ${platform} القصيرة. اكتب سكربت احترافي وجذاب باللغة العربية.
-
-المعلومات:
-- الموضوع: ${topic}
-- مدة الفيديو: ${duration}
-- نوعية المحتوى: ${type}
-- المنصة: ${platform}
-
-اكتب السكربت بهذا الشكل:
-🎬 الهوك - أول 3 ثواني جذابة
-📌 المحتوى الرئيسي - نقاط مرقمة
-🔚 الختام مع Call to Action
-
-اجعل السكربت مناسب لمدة ${duration} وجذاب من أول ثانية.`;
-
+    const prompt=`أنت خبير في كتابة سكربتات فيديوهات ${platform} القصيرة. اكتب سكربت احترافي وجذاب باللغة العربية.\n\nالمعلومات:\n- الموضوع: ${topic}\n- مدة الفيديو: ${duration}\n- نوعية المحتوى: ${type}\n- المنصة: ${platform}\n\nاكتب السكربت:\n🎬 الهوك\n📌 المحتوى الرئيسي\n🔚 الختام مع Call to Action`;
     try{
-      const res=await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
-        {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-        }
-      );
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
       const data=await res.json();
       const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-      if(!text) throw new Error('لا يوجد رد');
+      if(!text)throw new Error('لا يوجد رد');
       resultText.textContent=text;
       resultCard.style.display='block';
       resultCard.scrollIntoView({behavior:'smooth'});
     }catch(e){
-      error.textContent='❌ حدث خطأ، تأكد من الاتصال وحاول مرة ثانية';
+      error.textContent='❌ '+e.message;
       error.style.display='block';
     }finally{
       btn.disabled=false;
@@ -169,16 +129,11 @@
   }
 
   function copyScript(){
-    const text=document.getElementById('result-text').textContent;
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(document.getElementById('result-text').textContent);
     const btn=document.querySelector('.copy-btn');
     btn.textContent='✅ تم النسخ!';
     setTimeout(()=>btn.textContent='📋 نسخ',2000);
   }
 </script>
 </body>
-</html>
-    
-  </body>
-  
 </html>
